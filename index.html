@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Microphotos</title>
+		<link rel="stylesheet" href="style.css">
+	</head>
+
+	<body>
+		<h2 style="color:white;">Все фотографии сделаны <a href="https://www.instagram.com/whatisgonee/" target="_blank">@whatisgonee</a></h2>
+		<div id="photos"><h2 id="sign" style="color:white">Пожалуйста подождите, это может занять несколько минут...</h2></div>
+
+		<script type='module'>
+			import { Octokit } from "https://cdn.skypack.dev/@octokit/core";
+			import { retry } from "https://cdn.skypack.dev/@octokit/plugin-retry";
+			import { throttling } from "https://cdn.skypack.dev/@octokit/plugin-throttling";
+
+			const MyOctokit = Octokit.plugin(retry, throttling);
+			const octokit = new MyOctokit({
+				auth: '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',
+				throttle: {
+					onRateLimit: (retryAfter, options) => {
+				      document.getElementById("sign").innerHTML = "Превышен лимит запросов. Попробуйте позже."
+				    },
+				    onAbuseLimit: (retryAfter, options) => {
+				      myOctokit.log.warn(
+				        `Abuse detected for request ${options.method} ${options.url}`
+				      );
+				    }
+				}
+			});
+
+			octokit.request('GET https://api.github.com/repos/whatisgonee/microphotos/contents/images/').then(response => {
+				if(response.status != 200) {
+					document.getElementById('sign').innerHTML = "Что-то пошло не так. Попробуйте позже."
+				} else {
+					document.getElementById('sign').classList.add('hide');
+					for(var i = 0; i < response.data.length; i++) {
+						if(response.data[i].name.endsWith('.png') || response.data[i].name.endsWith('.jpg')) {
+							var child = document.createElement('IMG');
+							child.src = response.data[i].download_url;
+							document.getElementById('photos').appendChild(child);
+						}
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

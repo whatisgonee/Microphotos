@@ -1,0 +1,18 @@
+body {
+	background-color: #151515;
+}
+
+#photos {
+	margin: auto;
+	width: 50%;
+}
+
+img {
+	margin-top: -8px;
+}
+
+.hide {
+	visibility: hidden;
+	position: fixed;
+	margin-top: 120px;
+}
