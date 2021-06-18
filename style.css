@@ -3,6 +3,8 @@ body {
 }
 
 #photos {
+	display: flex;
+	flex-direction: column-reverse;
 	margin: auto;
 	width: 50%;
 }
