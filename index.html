@@ -32,13 +32,24 @@
 				if(response.status != 200) {
 					document.getElementById('sign').innerHTML = "Что-то пошло не так. Попробуйте позже."
 				} else {
+					var elem = [];
 					document.getElementById('sign').classList.add('hide');
 					for(var i = 0; i < response.data.length; i++) {
-						if(response.data[i].name.endsWith('.png') || response.data[i].name.endsWith('.jpg')) {
-							var child = document.createElement('IMG');
-							child.src = response.data[i].download_url;
-							document.getElementById('photos').appendChild(child);
+						if(response.data[i].name.endsWith('.png') || response.data[i].name.endsWith('.jpg') || response.data[i].name.endsWith('.jpeg')) {
+							elem.push(response.data[i].name);
 						}
+					}
+
+					elem.sort((a, b) => {
+						var x = a.substring(0, a.search(/\./));
+						var y = b.substring(0, b.search(/\./));
+						return x - y
+					});
+					
+					for(var i = 0; i < elem.length; i++) {
+						var child = document.createElement('IMG');
+						child.src = `https://raw.githubusercontent.com/whatisgonee/Microphotos/main/images/${elem[i]}`;
+						document.getElementById('photos').appendChild(child);
 					}
 				}
 			});
