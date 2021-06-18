@@ -16,7 +16,6 @@
 
 			const MyOctokit = Octokit.plugin(retry, throttling);
 			const octokit = new MyOctokit({
-				auth: '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',
 				throttle: {
 					onRateLimit: (retryAfter, options) => {
 				      document.getElementById("sign").innerHTML = "Превышен лимит запросов. Попробуйте позже."
