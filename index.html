@@ -6,53 +6,29 @@
 	</head>
 
 	<body>
-		<h2 style="color:white;">Все фотографии сделаны <a href="https://www.instagram.com/whatisgonee/" target="_blank">@whatisgonee</a></h2>
-		<div id="photos"><h2 id="sign" style="color:white">Пожалуйста подождите, это может занять несколько минут...</h2></div>
+		<h2>Все фотографии сделаны <a href="https://www.instagram.com/whatisgonee/" target="_blank">@whatisgonee</a></h2>
+		<footnote style="position:fixed;bottom:0;width:100%;margin-bottom:10px;text-decoration:underline white;z-index:2;">© Все права защищены</footnote>
+		<div id="photos">
+		</div>
+		
 
 		<script type='module'>
-			import { Octokit } from "https://cdn.skypack.dev/@octokit/core";
-			import { retry } from "https://cdn.skypack.dev/@octokit/plugin-retry";
-			import { throttling } from "https://cdn.skypack.dev/@octokit/plugin-throttling";
-
-			const MyOctokit = Octokit.plugin(retry, throttling);
-			const octokit = new MyOctokit({
-				throttle: {
-					onRateLimit: (retryAfter, options) => {
-				      document.getElementById("sign").innerHTML = "Превышен лимит запросов. Попробуйте позже."
-				    },
-				    onAbuseLimit: (retryAfter, options) => {
-				      myOctokit.log.warn(
-				        `Abuse detected for request ${options.method} ${options.url}`
-				      );
-				    }
-				}
-			});
-
-			octokit.request('GET https://api.github.com/repos/whatisgonee/microphotos/contents/images/').then(response => {
-				if(response.status != 200) {
-					document.getElementById('sign').innerHTML = "Что-то пошло не так. Попробуйте позже."
+			var xmlHttp = new XMLHttpRequest();
+			for(var i = 1; i > -1; i++) {
+				xmlHttp.open( "GET", "https://raw.githubusercontent.com/whatisgonee/Microphotos/main/images/" + i + ".jpeg", false );
+				xmlHttp.send( null );
+				if(xmlHttp.status == "404") {
+					console.log("help");
+					i = -2;
 				} else {
-					var elem = [];
-					document.getElementById('sign').classList.add('hide');
-					for(var i = 0; i < response.data.length; i++) {
-						if(response.data[i].name.endsWith('.png') || response.data[i].name.endsWith('.jpg') || response.data[i].name.endsWith('.jpeg')) {
-							elem.push(response.data[i].name);
-						}
-					}
-
-					elem.sort((a, b) => {
-						var x = a.substring(0, a.search(/\./));
-						var y = b.substring(0, b.search(/\./));
-						return x - y
-					});
-					
-					for(var i = 0; i < elem.length; i++) {
-						var child = document.createElement('IMG');
-						child.src = `https://raw.githubusercontent.com/whatisgonee/Microphotos/main/images/${elem[i]}`;
-						document.getElementById('photos').appendChild(child);
-					}
+					var img = document.createElement('img');
+					var div = document.createElement('div');
+					img.src = xmlHttp.responseURL;
+					div.appendChild(img);
+					div.classList.add("imageHolder");
+					document.getElementById("photos").prepend(div);
 				}
-			});
+			}
 		</script>
 	</body>
 </html>
