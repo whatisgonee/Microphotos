@@ -1,16 +1,27 @@
 body {
 	background-color: #151515;
-}
-
-#photos {
-	display: flex;
-	flex-direction: column-reverse;
-	margin: auto;
-	width: 50%;
+	color: white;
+	overflow-x:hidden;
 }
 
 img {
-	margin-top: -8px;
+	display: block;
+	max-width: 100%; 
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 8px;
+}
+
+.imageHolder {
+	min-width: 300px;
+	position: relative;
+	width: 100vw;
+	overflow: scroll;
+}
+
+a {
+	color: inherit;
+	cursor: pointer;
 }
 
 .hide {
